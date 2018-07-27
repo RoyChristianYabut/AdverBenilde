@@ -22,6 +22,8 @@ namespace AdverBenilde.App_Code
             return ConfigurationManager.ConnectionStrings["MyCon2"].ConnectionString;
         }
 
+
+
         public static string Hash(string phrase)
         {
             SHA512Managed HashTool = new SHA512Managed();

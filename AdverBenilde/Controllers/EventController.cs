@@ -54,7 +54,7 @@ namespace AdverBenilde.Controllers
             {
                 con.Open();
                 string query = @" INSERT INTO [Events] 
-                              (LocationCode, Name, Description, 
+                              (LocationCode, EventHandlerID, Name, Description, 
                                Image, Time, IsFeatured,Status,DateAdded)
                               VALUES
                               (@LocationCode, @Name, @Description, 
@@ -62,6 +62,7 @@ namespace AdverBenilde.Controllers
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
+                    cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
                     cmd.Parameters.AddWithValue("@Name", record.Name);
                     cmd.Parameters.AddWithValue("@Description", record.Description);
                     cmd.Parameters.AddWithValue("@Image",
@@ -73,6 +74,59 @@ namespace AdverBenilde.Controllers
                     cmd.Parameters.AddWithValue("@Status", "Pending");
                     cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
                     cmd.ExecuteNonQuery();
+                }
+
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult CreateLocation()
+        {
+            var record = new LocationModel();
+            return View(record);
+        }
+
+        [HttpPost]
+        public ActionResult CreateLocation(LocationModel record)
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @" INSERT INTO [Location] 
+                              (CampusID, Name)
+                              VALUES
+                              (@CampusID, @Name)";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@CampusID", record.CampusID);
+                    cmd.Parameters.AddWithValue("@Name", record.Name);
+                }
+
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult CreateHandler()
+        {
+            var record = new LocationModel();
+            return View(record);
+        }
+
+        [HttpPost]
+        public ActionResult CreateHandler(EventHandlerModel record)
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @" INSERT INTO [EventHandler] 
+                              (Name)
+                              VALUES
+                              (@ @Name)";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", record.Name);
                 }
 
             }

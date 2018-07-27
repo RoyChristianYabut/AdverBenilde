@@ -13,6 +13,7 @@ namespace AdverBenilde.Models
         public int ID { get; set; }
 
         public int EventHandlerID { get; set; }
+        public List<EventHandlerModel> EventHandlers { get; set; }
         public string EventHandlerName { get; set; }
         public int LocationCode { get; set; }
         public string LocationName { get; set; }

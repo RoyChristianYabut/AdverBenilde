@@ -1,0 +1,138 @@
+﻿@model AdverBenilde.Models.EventsModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EventsModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EventHandlerID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventHandlerID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EventHandlerName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventHandlerName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocationCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocationCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocationName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocationName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Image)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsFeatured)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsFeatured)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAdded)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAdded)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateModified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateModified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsGoing)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsGoing)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Interested)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interested)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NotGoing)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NotGoing)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
