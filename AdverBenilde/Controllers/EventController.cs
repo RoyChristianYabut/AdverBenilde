@@ -19,7 +19,7 @@ namespace AdverBenilde.Controllers
                 con.Open();
                 string query = @"SELECT l.LocationCode, c.Name AS CampusName, l.Name FROM Location l
                     INNER JOIN Campus c ON l.CampusID=c.CampusID
-                    ORDER BY Locations";
+                    ORDER BY CampusID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
@@ -40,10 +40,38 @@ namespace AdverBenilde.Controllers
             return list;
         }
 
+        public List<EventHandlerModel> GetHandler()
+        {
+            var list = new List<EventHandlerModel>();
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT EventHandlerID, Name FROM EventHandler 
+                                 ORDER BY EventHandlerID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while (data.Read())
+                        {
+                            list.Add(new EventHandlerModel
+                            {
+                                EventHandlerID = int.Parse(data["EventHandlerID"].ToString()),
+                                Name = data["Name"].ToString()
+                            });
+                        }
+                    }
+                }
+
+            }
+            return list;
+        }
+
         public ActionResult Create()
         {
             var record = new EventsModel();
             record.AllLocations = GetLocation();
+            record.EventHandlers = GetHandler();
             return View(record);
         }
 

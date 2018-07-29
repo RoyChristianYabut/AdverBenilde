@@ -15,6 +15,7 @@ namespace AdverBenilde.Models
         [Required(ErrorMessage = "Required field")]
         public int TypeID { get; set; }
 
+
         public List<TypesModel> UserTypes { get; set; }
 
         public string UserType { get; set; }

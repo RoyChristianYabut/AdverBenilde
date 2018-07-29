@@ -27,11 +27,11 @@ namespace AdverBenilde.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT email FROM users
-                    WHERE email = @email";
+                string query = @"SELECT Email FROM Users
+                    WHERE Email = @Email";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@Email", email);
                     return cmd.ExecuteScalar() == null ? false : true;
                 }
             }
