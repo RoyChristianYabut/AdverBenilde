@@ -19,7 +19,7 @@ namespace AdverBenilde.Controllers
                 con.Open();
                 string query = @"SELECT l.LocationCode, c.Name AS CampusName, l.Name FROM Location l
                     INNER JOIN Campus c ON l.CampusID=c.CampusID
-                    ORDER BY CampusID";
+                    ORDER BY l.CampusID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
@@ -47,7 +47,7 @@ namespace AdverBenilde.Controllers
             {
                 con.Open();
                 string query = @"SELECT EventHandlerID, Name FROM EventHandler 
-                                 ORDER BY EventHandlerID";
+                                 ORDER BY CASE WHEN Name='Other...' THEN 2 ELSE 1 END, Name";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
@@ -81,24 +81,23 @@ namespace AdverBenilde.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @" INSERT INTO [Events] 
-                              (LocationCode, EventHandlerID, Name, Description, 
-                               Image, Time, IsFeatured,Status,DateAdded)
+                string query = @" INSERT INTO Events
+                              (EventHandlerID, LocationCode, Name, Description, 
+                               Image, Time ,Status,DateAdded)
                               VALUES
-                              (@LocationCode, @Name, @Description, 
-                              @Image, @Time,@IsFeatured,@Status,@DateAdded)";
+                              (@EventHandlerID, @LocationCode, @Name, @Description, 
+                              @Image, @Time,@Status,@DateAdded)";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
                     cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
+                    cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
                     cmd.Parameters.AddWithValue("@Name", record.Name);
                     cmd.Parameters.AddWithValue("@Description", record.Description);
                     cmd.Parameters.AddWithValue("@Image",
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
-                    Image.SaveAs(Server.MapPath("~/Images/Products/" +
+                    Image.SaveAs(Server.MapPath("~/Images/Events/" +
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
                     cmd.Parameters.AddWithValue("@Time", record.Time);
-                    cmd.Parameters.AddWithValue("@IsFeatured", record.IsFeatured);
                     cmd.Parameters.AddWithValue("@Status", "Pending");
                     cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
                     cmd.ExecuteNonQuery();
@@ -174,7 +173,8 @@ namespace AdverBenilde.Controllers
                     WHERE e.LocationCode = l.LocationCode) AS TotalCount
                     FROM Location l
                     INNER JOIN Campus c ON l.CampusID=c.CampusID
-                    ORDER BY l.Name";
+                    WHERE NOT l.Name='Other...'
+                    ORDER BY c.Name DESC, l.Name";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
@@ -205,7 +205,7 @@ namespace AdverBenilde.Controllers
                     e.DateAdded 
                     FROM Events e
                     LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
-                    ORDER BY v.DateAdded";
+                    ORDER BY e.DateAdded";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
@@ -216,7 +216,7 @@ namespace AdverBenilde.Controllers
                             {
                                 ID = int.Parse(data["EventID"].ToString()),
                                 Name = data["Name"].ToString(),
-                                EventHandlerName = data["Handler Name"].ToString(),
+                                EventHandlerName = data["HandlerName"].ToString(),
                                 Description = data["Description"].ToString(),
                                 Image = data["Image"].ToString(),
                                 Time = DateTime.Parse(data["Time"].ToString()),
@@ -337,3 +337,4 @@ namespace AdverBenilde.Controllers
         }
     }
 }
+

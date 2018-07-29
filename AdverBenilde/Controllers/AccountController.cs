@@ -58,9 +58,9 @@ namespace AdverBenilde.Controllers
                     @LastName, @Status, @DateAdded)";
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@TypeID", 5);
+                        cmd.Parameters.AddWithValue("@TypeID", 3);
                         cmd.Parameters.AddWithValue("@Email", record.Email);
-                        cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Password));
+                        cmd.Parameters.AddWithValue("@Password", Helper.Unhash(record.Password));
                         cmd.Parameters.AddWithValue("@FirstName", record.FN);
                         cmd.Parameters.AddWithValue("@LastName", record.LN);
                         cmd.Parameters.AddWithValue("@Status", "Pending");
@@ -75,7 +75,7 @@ namespace AdverBenilde.Controllers
                             "Thank you. 🙂<br/><br/>" +
                             "<h3>The Administrator</h3>";
                         Helper.SendEmail(record.Email, "Account Activation", message);
-                        return RedirectToAction("Login");
+                        return RedirectToAction("Login", "Main");
                     }
                 }
             }

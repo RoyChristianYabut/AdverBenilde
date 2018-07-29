@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace AdverBenilde.Controllers
 {
@@ -24,27 +26,37 @@ namespace AdverBenilde.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT Email, Password FROM Users
-                    WHERE Email = @Email AND Password=@Password";
+                string query = @"SELECT UserID, FirstName, LastName, Email, Password FROM Users
+                    WHERE Email = @Email";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@Email", record.Email);
-                    cmd.Parameters.AddWithValue("@Password", record.Password);
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
                         while (data.Read())
                         {
-                            Session["UserID"] = data["UserID"].ToString();
-                            Session["UserName"] = data["FirstName"].ToString() + " "+data["LastName"].ToString();
-                            Session["Email"] = data["Email"].ToString();
+                            if (string.Compare(Helper.Hash(record.Password), data["Password"].ToString()) == 0)
+                            {
+                                Session["UserID"] = data["UserID"].ToString();
+                                Session["UserName"] = data["FirstName"].ToString() + " " + data["LastName"].ToString();
+                                Session["Email"] = data["Email"].ToString();
+                            }
+                            else
+                            {
+
+                            }
 
                         }
-                    }
 
+                    }
+                    return RedirectToAction("UserDashBoard");
                 }
             }
-            return RedirectToAction("UserDashBoard");
+
         }
+
+
+
 
         public ActionResult UserDashBoard()
         {
@@ -58,5 +70,4 @@ namespace AdverBenilde.Controllers
             }
         }
     }
-}
 }

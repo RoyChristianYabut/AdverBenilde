@@ -28,7 +28,7 @@ namespace AdverBenilde.Models
 
 
         public string Image { get; set; }
-
+        [DataType(DataType.Date)]
         public DateTime Time { get; set; }
 
         public bool IsFeatured { get; set; }
