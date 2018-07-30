@@ -12,14 +12,23 @@
         <hr />
         <div class="list-group">
             <a href="@Url.Action("Index?c=", "Event")" class="list-group-item">All Categories</a>
-            @foreach (var item in Model.AllLocations)
-            {
-                <a href="Index?c=@item.LocationCode"
-                   class="list-group-item">
-                    <span class="badge">@item.TotalCount</span>
-                    @item.Name, @item.CampusName
-                </a>
-            }
+            <h3 class="list-group-item">Date</h3>
+            <a href="Index?c=100000" class="list-group-item">
+                <span class="badge"></span>
+                Soonest To Latest
+            </a>
+            <a href="Index?c=100001" class="list-group-item">
+                <span class="badge"></span>
+                Latest to Soonest
+            </a>
+            <h3 class="list-group-item">Campus</h3>
+            @foreach (var item in Model.AllCampus)
+    {
+        <a href="Index?c=@item.CampusID" class="list-group-item">
+            <span class="badge"></span>
+            @item.Name
+        </a>
+}
         </div>
     </div>
 </div>
@@ -29,14 +38,15 @@
     @foreach (var item in Model.AllEvents)
     {
         <div class="col-lg-3">
-            <a href="@Url.Action("Details", "Events", new { id = item.ID })"
+            <a href="@Url.Action("Details", "Event", new { id = item.ID })"
                style="text-decoration:none;">
                 <div class="thumbnail">
                     <img src="../Images/Events/@item.Image" alt="@item.Name"
                          class="img-responsive" />
                     <div class="caption">
                         <h3>@item.Name</h3>
-                        <small>Description: @item.Description</small>
+                        <small>Location: @item.LocationName</small>
+                        <small>Time: @item.Time</small>
                     </div>
                 </div>
             </a>

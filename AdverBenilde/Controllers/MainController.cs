@@ -27,19 +27,20 @@ namespace AdverBenilde.Controllers
             {
                 con.Open();
                 string query = @"SELECT UserID, FirstName, LastName, Email, Password FROM Users
-                    WHERE Email = @Email";
+                    WHERE Email = @Email and Password=@Password";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@Email", record.Email);
+                    cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Password));
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
                         while (data.Read())
                         {
-                            if (string.Compare(Helper.Hash(record.Password), data["Password"].ToString()) == 0)
+                            if (data.HasRows)
                             {
-                                Session["UserID"] = data["UserID"].ToString();
-                                Session["UserName"] = data["FirstName"].ToString() + " " + data["LastName"].ToString();
-                                Session["Email"] = data["Email"].ToString();
+                                Session["userid"] = data["UserID"].ToString();
+                                Session["username"] = data["FirstName"].ToString() + " " + data["LastName"].ToString();
+                                Session["email"] = data["Email"].ToString();
                             }
                             else
                             {
@@ -60,7 +61,7 @@ namespace AdverBenilde.Controllers
 
         public ActionResult UserDashBoard()
         {
-            if (Session["UserID"] != null)
+            if (Session["userid"] != null)
             {
                 return RedirectToAction("Index", "Event");
             }

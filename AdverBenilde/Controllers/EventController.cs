@@ -30,7 +30,7 @@ namespace AdverBenilde.Controllers
                             {
                                 LocationCode = int.Parse(data["LocationCode"].ToString()),
                                 CampusName = data["CampusName"].ToString(),
-                                Name = data["Name"].ToString()
+                                Name = data["CampusName"].ToString()+", "+data["Name"].ToString()
                             });
                         }
                     }
@@ -111,6 +111,7 @@ namespace AdverBenilde.Controllers
         public ActionResult CreateLocation()
         {
             var record = new LocationModel();
+            record.Campuses = GetCampus();
             return View(record);
         }
 
@@ -128,16 +129,17 @@ namespace AdverBenilde.Controllers
                 {
                     cmd.Parameters.AddWithValue("@CampusID", record.CampusID);
                     cmd.Parameters.AddWithValue("@Name", record.Name);
+                    cmd.ExecuteNonQuery();
                 }
 
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Create");
         }
 
         public ActionResult CreateHandler()
         {
-            var record = new LocationModel();
+            var record = new EventHandlerModel();
             return View(record);
         }
 
@@ -150,50 +152,81 @@ namespace AdverBenilde.Controllers
                 string query = @" INSERT INTO [EventHandler] 
                               (Name)
                               VALUES
-                              (@ @Name)";
+                              (@Name)";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@Name", record.Name);
+                    cmd.ExecuteNonQuery();
                 }
 
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Create");
         }
 
         // GET: Products
-        public List<LocationModel> GetLocations()
+        //public List<LocationModel> GetLocations()
+        //{
+        //    var list = new List<LocationModel>();
+        //    using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+        //    {
+        //        con.Open();
+        //        string query = @"SELECT DISTINCT c.Name AS CampusName,
+        //            (SELECT COUNT(e.CampusID) FROM Events e
+        //            WHERE e.LocationCode = l.LocationCode) AS TotalCount
+        //            FROM Location l
+        //            INNER JOIN Campus c ON l.CampusID=c.CampusID
+        //            WHERE NOT l.Name='Other...'
+        //            ORDER BY c.Name DESC";
+        //        using (SqlCommand cmd = new SqlCommand(query, con))
+        //        {
+        //            using (SqlDataReader data = cmd.ExecuteReader())
+        //            {
+        //                while (data.Read())
+        //                {
+        //                    list.Add(new LocationModel
+        //                    {
+        //                        LocationCode = int.Parse(data["LocationCode"].ToString()),
+        //                        CampusName = data["CampusName"].ToString(),
+        //                        Name = data["Name"].ToString(),
+        //                        TotalCount = int.Parse(data["TotalCount"].ToString())
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return list;
+        //}
+
+        public List<CampusModel> GetCampus()
         {
-            var list = new List<LocationModel>();
+            var list = new List<CampusModel>();
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT l.LocationCode, c.Name AS CampusName, l.Name,
-                    (SELECT COUNT(e.LocationCode) FROM Events e
-                    WHERE e.LocationCode = l.LocationCode) AS TotalCount
-                    FROM Location l
-                    INNER JOIN Campus c ON l.CampusID=c.CampusID
-                    WHERE NOT l.Name='Other...'
-                    ORDER BY c.Name DESC, l.Name";
+                string query = @"SELECT  c.CampusID, c.Name AS CampusName
+                              FROM Campus c
+                              WHERE NOT c.CampusID=4
+					          Order By CampusID ";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
                         while (data.Read())
                         {
-                            list.Add(new LocationModel
+                            list.Add(new CampusModel
                             {
-                                LocationCode = int.Parse(data["LocationCode"].ToString()),
-                                CampusName = data["CampusName"].ToString(),
-                                Name = data["Name"].ToString(),
-                                TotalCount = int.Parse(data["TotalCount"].ToString())
+                                CampusID = int.Parse(data["CampusID"].ToString()),
+                                Name = data["CampusName"].ToString()
                             });
                         }
                     }
                 }
+
             }
             return list;
         }
+
 
         public List<EventsModel> GetEvent()
         {
@@ -201,10 +234,12 @@ namespace AdverBenilde.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], e.Description, e.Image, e.Time,
+                string query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.Description, e.Image, e.Time,
                     e.DateAdded 
                     FROM Events e
                     LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
+                    INNER JOIN Location l on e.LocationCode=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID
                     ORDER BY e.DateAdded";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
@@ -217,6 +252,7 @@ namespace AdverBenilde.Controllers
                                 ID = int.Parse(data["EventID"].ToString()),
                                 Name = data["Name"].ToString(),
                                 EventHandlerName = data["HandlerName"].ToString(),
+                                LocationName=data["LocationName"].ToString(),
                                 Description = data["Description"].ToString(),
                                 Image = data["Image"].ToString(),
                                 Time = DateTime.Parse(data["Time"].ToString()),
@@ -240,15 +276,42 @@ namespace AdverBenilde.Controllers
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
-                string query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], e.Description, e.Image, e.Time,
+                string query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.Description, e.Image, e.Time,
                     e.DateAdded 
                     FROM Events e
                     LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
-                    WHERE e.LocationCode=@LocationCode
-                    ORDER BY v.DateAdded";
+                    INNER JOIN Location l on e.LocationCode=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID
+                    WHERE c.CampusID=@CampusID
+                    ORDER BY e.DateAdded";
+
+                if (locatID == "100000")
+                {
+                    query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.Description, e.Image, e.Time,
+                    e.DateAdded 
+                    FROM Events e
+                    LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
+                    INNER JOIN Location l on e.LocationCode=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID
+                    ORDER BY e.Time";
+                }
+
+                if (locatID == "100001")
+                {
+                    query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.Description, e.Image, e.Time,
+                    e.DateAdded 
+                    FROM Events e
+                    LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
+                    INNER JOIN Location l on e.LocationCode=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID
+                    ORDER BY e.Time DESC";
+                }
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@LocationCode", locatID);
+                    if (!(locatID == "100000" || locatID == "100001"))
+                    {
+                        cmd.Parameters.AddWithValue("@CampusID", locatID);
+                    }
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
                         while (data.Read())
@@ -257,7 +320,8 @@ namespace AdverBenilde.Controllers
                             {
                                 ID = int.Parse(data["EventID"].ToString()),
                                 Name = data["Name"].ToString(),
-                                EventHandlerName = data["Handler Name"].ToString(),
+                                EventHandlerName = data["HandlerName"].ToString(),
+                                LocationName = data["LocationName"].ToString(),
                                 Description = data["Description"].ToString(),
                                 Image = data["Image"].ToString(),
                                 Time = DateTime.Parse(data["Time"].ToString()),
@@ -273,7 +337,7 @@ namespace AdverBenilde.Controllers
         public ActionResult Index()
         {
             var list = new EventsModel();
-            list.AllLocations = GetLocations();
+            list.AllCampus = GetCampus();
             if (Request.QueryString["c"] == null)
             {
                 list.AllEvents = GetEvent();
@@ -298,16 +362,16 @@ namespace AdverBenilde.Controllers
             {
                 con.Open();
                 string query = @"Select e.EventID, h.Name AS EHName, l.Name AS LName, c.Name AS CName,
-                            e.Name, e.Description, e.Image, e.Time, e.Status
-                            e.DateAdded
+                            e.Name, e.Description, e.Image, e.Time, e.Status,
+                            e.DateAdded, e.IsGoing, e.Interested, e.NotGoing
                             FROM Events e
                             LEFT JOIN EventHandler h ON e.EventHandlerID=h.EventHandlerID
-                            LEFT JOIN Location l ON e.LocationCode=v.LocationCode
-                            INNER JOIN Campus c ON l.CampusID=c.CampusID
-                            WHERE e.EventID=@ID";
+                            LEFT JOIN Location l ON e.LocationCode=l.LocationCode
+                            LEFT JOIN Campus c ON l.CampusID=c.CampusID
+                            WHERE e.EventID=@EventID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("ID", id);
+                    cmd.Parameters.AddWithValue("@EventID", id);
                     using (SqlDataReader data = cmd.ExecuteReader())
                     {
                         if (data.HasRows)
@@ -323,6 +387,9 @@ namespace AdverBenilde.Controllers
                                 record.Time = DateTime.Parse(data["Time"].ToString());
                                 record.Status = data["Status"].ToString();
                                 record.DateAdded = DateTime.Parse(data["DateAdded"].ToString());
+                                record.IsGoing = int.Parse(data["IsGoing"].ToString());
+                                record.Interested = int.Parse(data["Interested"].ToString());
+                                record.NotGoing = int.Parse(data["NotGoing"].ToString());
                             }
                         }
                         else

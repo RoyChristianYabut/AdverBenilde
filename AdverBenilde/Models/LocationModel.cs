@@ -12,6 +12,7 @@ namespace AdverBenilde.Models
         public int LocationCode { get; set; }
         public int CampusID { get; set; }
         public string CampusName { get; set; }
+        public List<CampusModel> Campuses { get; set; }
         public string Name { get; set; }
         public int TotalCount { get; set; }
     }

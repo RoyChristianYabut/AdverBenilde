@@ -17,6 +17,7 @@ namespace AdverBenilde.Models
         public string EventHandlerName { get; set; }
         public int LocationCode { get; set; }
         public string LocationName { get; set; }
+        public List<CampusModel> AllCampus { get; set; }
         public List<LocationModel> AllLocations { get; set; }
         public List<EventsModel> AllEvents { get; set; }
         public string Name { get; set; }
@@ -28,7 +29,7 @@ namespace AdverBenilde.Models
 
 
         public string Image { get; set; }
-        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy hh:mm tt}", ApplyFormatInEditMode = true)]
         public DateTime Time { get; set; }
 
         public bool IsFeatured { get; set; }

@@ -4,6 +4,7 @@
     ViewBag.Title = "Create";
 }
 
+
 <h2>Create</h2>
 
 
@@ -22,29 +23,6 @@ new
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.EventHandlerName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.EventHandlerID,
-                                                         new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
-                                                         "Choose the Organization.. ",
-                                                         new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EventHandlerID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.LocationName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.LocationCode,
-                                                      new SelectList(Model.AllLocations, "LocationCode", "Name"),
-                                                      "Choose the Location.. ",
-                                                      new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.LocationCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -54,6 +32,8 @@ new
             </div>
         </div>
 
+
+
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -61,6 +41,42 @@ new
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventHandlerName, htmlAttributes: new { @class = "control-label col-md-2" })
+
+
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.EventHandlerID,
+                                                  new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
+                                                  "Choose the Organization.. ",
+                                                  new { @class = "form-control" })
+                <span>@Html.ActionLink("Create Event Handler", "CreateHandler")</span> 
+                @Html.ValidationMessageFor(model => model.EventHandlerID, "", new { @class = "text-danger" })
+
+            </div>
+          
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LocationName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.LocationCode,
+                                                                   new SelectList(Model.AllLocations, "LocationCode", "Name"),
+                                                                   "Choose the Location.. ",
+                                                                   new { @class = "form-control" })
+                <span>@Html.ActionLink("Create Event Handler", "CreateLocation")</span>
+                @Html.ValidationMessageFor(model => model.LocationCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -83,7 +99,7 @@ new
         <div class="form-group">
             @Html.LabelFor(model => model.Time, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "datepicker", placeholder = "Enter Date of Event" } })
+                @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
                 @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -102,13 +118,19 @@ new
 
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryui")
-    @Styles.Render("~/Content/jqueryui")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+
     <script type="text/javascript">
         $(function () { // will trigger when the document is ready
-            $('.datepicker').datepicker().css("diplay", "inline-block").next("button").button({
-                icons: { primary: "ui-icon-calendar" }, label: "Select A Date", text: false
-            }); //Initialise any date pickers
+            $('.datetimepicker').datetimepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-5:+20",
+                dateFormat: 'dd-MM-yy',
+                controlType: 'select',
+                timeFormat: 'hh:mm TT'
+            }) //Initialise any date pickers
         });
     </script>
 }
