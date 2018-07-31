@@ -35,7 +35,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
-
+                con.Close();
             }
             return list;
         }
@@ -62,7 +62,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
-
+                con.Close();
             }
             return list;
         }
@@ -83,10 +83,10 @@ namespace AdverBenilde.Controllers
                 con.Open();
                 string query = @" INSERT INTO Events
                               (EventHandlerID, LocationCode, Name, Description, 
-                               Image, Time ,Status,DateAdded)
+                               Image, Time ,Status,DateAdded, IsGoing, Interested, NotGoing)
                               VALUES
                               (@EventHandlerID, @LocationCode, @Name, @Description, 
-                              @Image, @Time,@Status,@DateAdded)";
+                              @Image, @Time,@Status,@DateAdded, @IsGoing, @Interested, @NotGoing)";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
@@ -100,9 +100,12 @@ namespace AdverBenilde.Controllers
                     cmd.Parameters.AddWithValue("@Time", record.Time);
                     cmd.Parameters.AddWithValue("@Status", "Pending");
                     cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@IsGoing", 0);
+                    cmd.Parameters.AddWithValue("@Interested", 0);
+                    cmd.Parameters.AddWithValue("@NotGoing", 0);
                     cmd.ExecuteNonQuery();
                 }
-
+                con.Close();
             }
 
             return RedirectToAction("Index");
@@ -131,7 +134,7 @@ namespace AdverBenilde.Controllers
                     cmd.Parameters.AddWithValue("@Name", record.Name);
                     cmd.ExecuteNonQuery();
                 }
-
+                con.Close();
             }
 
             return RedirectToAction("Create");
@@ -158,7 +161,7 @@ namespace AdverBenilde.Controllers
                     cmd.Parameters.AddWithValue("@Name", record.Name);
                     cmd.ExecuteNonQuery();
                 }
-
+                con.Close();
             }
 
             return RedirectToAction("Create");
@@ -222,7 +225,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
-
+                con.Close();
             }
             return list;
         }
@@ -263,7 +266,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
-
+                con.Close();
             }
             return list;
         }
@@ -330,6 +333,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
+                con.Close();
             }
             return list;
         }
@@ -398,10 +402,60 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
+                con.Close();
             }
 
             return View(record);
         }
+
+        [HttpPost]
+        public ActionResult Details(int? id, string Action)
+        {
+            int val1 = 0;
+            int val2 = 0;
+            int val3 = 0;
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (Action == "1")
+            {
+                val1 = 1;
+            }
+            else if (Action == "2")
+            {
+                val2 = 1;
+            }
+            else if (Action == "3")
+            {
+                val3 = 1;
+            }
+
+            var record = new EventsModel();
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"UPDATE Events SET IsGoing=IsGoing+@value1, Interested=Interested+@value2, NotGoing=NotGoing+@value3 WHERE EventID=@EventID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@value1", val1);
+                    cmd.Parameters.AddWithValue("@value2", val2);
+                    cmd.Parameters.AddWithValue("@value3", val3);
+                    cmd.Parameters.AddWithValue("@EventID", id);
+                    cmd.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+
+            return RedirectToAction("Details");
+        }
+
+        public ActionResult EditEvent()
+        {
+            return View();
+        }
     }
+
 }
 

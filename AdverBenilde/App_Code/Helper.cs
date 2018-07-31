@@ -70,5 +70,13 @@ namespace AdverBenilde.App_Code
             MailClient.Credentials = new System.Net.NetworkCredential("benilde.web.development@gmail.com", "!thisisalongpassword1234567890");
             MailClient.Send(emailMessage);
         }
+
+        public static void ValidateLogin()
+        {
+            if (HttpContext.Current.Session["userid"] == null)
+            {
+                HttpContext.Current.Response.Redirect("~/Account/Login");
+            }
+        }
     }
 }

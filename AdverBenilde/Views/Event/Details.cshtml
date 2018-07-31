@@ -4,23 +4,30 @@
     ViewBag.Title = "Details";
 }
 
-<div class="col-lg-4">
-    <img src="../../Images/Events/@Model.Image" class="img-responsive" />
-</div>
-<div class="col-lg-8">
-    <div class="well clearfix">
-        <h2>@Model.Name </h2>
-        <hr />
-        <small>Location: @Model.LocationName</small><br />
-        <small>Time:@Model.Time</small>
-        <strong>Description:</strong><br />
-        <p>
-            @Model.Description
-        </p>
-        <small>Event Handler: @Model.EventHandlerName</small>
-        <small>Status: @Model.Status</small>
-        <h4>Is Going @Model.IsGoing.ToString()   Interested @Model.Interested.ToString()   NotGoing @Model.NotGoing.ToString()</h4>
-
-        <small>Date Added: @Model.DateAdded</small>
+@using (Html.BeginForm())
+{
+    <div class="col-lg-4">
+        <img src="../../Images/Events/@Model.Image" class="img-responsive" />
+        <label>@Html.RadioButton("Action", "1", new { onchange = "this.form.submit();" }) Is Going</label>
+        <label>@Html.RadioButton("Action", "2", new { onchange = "this.form.submit();" }) Interested</label>
+        <label>@Html.RadioButton("Action", "3", new { onchange = "this.form.submit();" }) Not Going</label>
     </div>
-</div>
+    <div class="col-lg-8">
+        <div class="well clearfix">
+            <h2>@Model.Name </h2>
+            <hr />
+
+            <strong>Time:@Model.Time</strong><br />
+            <small>Location: @Model.LocationName</small><br />
+            <strong>Description:</strong><br />
+            <p>
+                @Model.Description
+            </p>
+            <small>Event Handler: @Model.EventHandlerName</small><br />
+            <small>Status: @Model.Status</small>
+            <h6>|  Is Going-@Model.IsGoing.ToString()  | Interested-@Model.Interested.ToString()  | NotGoing-@Model.NotGoing.ToString()  |</h6>
+
+            <small>Date Added: @Model.DateAdded</small>
+        </div>
+    </div>
+}
