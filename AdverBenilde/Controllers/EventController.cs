@@ -69,6 +69,7 @@ namespace AdverBenilde.Controllers
 
         public ActionResult Create()
         {
+            Helper.ValidateLogin();
             var record = new EventsModel();
             record.AllLocations = GetLocation();
             record.EventHandlers = GetHandler();
@@ -78,6 +79,7 @@ namespace AdverBenilde.Controllers
         [HttpPost]
         public ActionResult Create(EventsModel record, HttpPostedFileBase Image)
         {
+            int eventid = 0;
             using (SqlConnection con = new SqlConnection(Helper.GetCon()))
             {
                 con.Open();
@@ -86,7 +88,7 @@ namespace AdverBenilde.Controllers
                                Image, Time ,Status,DateAdded, IsGoing, Interested, NotGoing)
                               VALUES
                               (@EventHandlerID, @LocationCode, @Name, @Description, 
-                              @Image, @Time,@Status,@DateAdded, @IsGoing, @Interested, @NotGoing)";
+                              @Image, @Time,@Status,@DateAdded, @IsGoing, @Interested, @NotGoing);";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
@@ -107,7 +109,30 @@ namespace AdverBenilde.Controllers
                 }
                 con.Close();
             }
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT MAX(EventID) FROM Events";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    eventid = (int)cmd.ExecuteScalar();
+                }
+                con.Close();
+            }
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT MAX(EventID) FROM Events;
+                                INSERT INTO EventHost VALUES (@UserID, @EventID);";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
 
+                    cmd.Parameters.AddWithValue("@UserID", Session["userid"].ToString());
+                    cmd.Parameters.AddWithValue("@EventID", eventid);
+                    cmd.ExecuteNonQuery();
+                }
+                con.Close();
+            }
             return RedirectToAction("Index");
         }
 
@@ -356,6 +381,7 @@ namespace AdverBenilde.Controllers
 
         public ActionResult Details(int? id)
         {
+            Helper.ValidateLogin();
             if (id == null)
             {
                 return RedirectToAction("Index");
@@ -408,28 +434,150 @@ namespace AdverBenilde.Controllers
             return View(record);
         }
 
+
+        public string action = "";
+        bool IsInserted(int eid)
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT Action FROM Interests WHERE UserID=@UserID AND EventID=@EventID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", Session["userid"].ToString());
+                    cmd.Parameters.AddWithValue("@EventID", eid);
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        if (data.HasRows)
+                        {
+                            while (data.Read())
+                            {
+                                action = data["Action"].ToString();
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                
+            }
+            return false;
+        }
+
         [HttpPost]
         public ActionResult Details(int? id, string Action)
         {
-            int val1 = 0;
-            int val2 = 0;
-            int val3 = 0;
             if (id == null)
             {
                 return RedirectToAction("Index");
             }
+            int val1 = 0;
+            int val2 = 0;
+            int val3 = 0;
+            bool isInsert = false;
+            if (IsInserted((int)id))
+            {
+                isInsert = true;
+            }
+            string checkValue = "";
+            if (action == "IsGoing")
+            {
+                checkValue = "1";
+            }
+            else if (action == "Interested")
+            {
+                checkValue = "2";
+            }
+            else if (action == "NotGoing")
+            {
+                checkValue = "3";
+            }
+            string Iaction = "";
 
-            if (Action == "1")
+            if (Action == "1" && isInsert==false)
             {
                 val1 = 1;
+                checkValue = "1";
             }
-            else if (Action == "2")
+            else if (Action == "2" && isInsert == false)
             {
                 val2 = 1;
+                checkValue = "2";
             }
-            else if (Action == "3")
+            else if (Action == "3" && isInsert == false)
             {
                 val3 = 1;
+                checkValue = "3";
+            }
+            else if (Action == "1" && isInsert == true)
+            {
+                if (checkValue == "1")
+                {
+                    val1 = 0;
+                }
+                else if (checkValue == "2")
+                {
+                    val1 = 1;
+                    val2 = -1;
+                }
+                else if (checkValue == "3")
+                {
+                    val1 = 1;
+                    val3 = -1;
+                }
+                checkValue = "1";
+            }
+            else if (Action == "2" && isInsert == true)
+            {
+                if (checkValue == "1")
+                {
+                    val1 = -1;
+                    val2 = 1;
+                }
+                else if (checkValue == "2")
+                {
+                    val2 = 0;
+                }
+                else if (checkValue == "3")
+                {
+                    val2 = 1;
+                    val3 = -1;
+                }
+                checkValue = "2";
+            }
+            else if (Action == "3" && isInsert == true)
+            {
+                if (checkValue == "1")
+                {
+                    val1 = -1;
+                    val3 = 1;
+                }
+                else if (checkValue == "2")
+                {
+                    val2 = -1;
+                    val3 = 1;
+                }
+                else if (checkValue == "3")
+                {
+                    val3 = 0;
+                }
+                checkValue = "3";
+            }
+
+            if (checkValue =="1")
+            {
+                Iaction = "IsGoing";
+            }
+            else if (checkValue=="2")
+            {
+                Iaction = "Interested";
+            }
+            else if (checkValue=="3")
+            {
+                Iaction = "NotGoing";
             }
 
             var record = new EventsModel();
@@ -448,12 +596,169 @@ namespace AdverBenilde.Controllers
                 con.Close();
             }
 
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = "";
+                if (isInsert == false)
+                {
+                    query = @"INSERT INTO Interests VALUES (@UserID, @EventID, @Action)";
+                }
+                else if (isInsert == true)
+                {
+                    query = @"UPDATE Interests SET Action=@Action WHERE UserID=@UserID AND EventID=@EventID";
+                }
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", Session["userid"].ToString());
+                    cmd.Parameters.AddWithValue("@EventID", id);
+                    cmd.Parameters.AddWithValue("@Action", Iaction);
+                    cmd.ExecuteNonQuery();
+                }
+                con.Close();
+            }
             return RedirectToAction("Details");
         }
 
-        public ActionResult EditEvent()
+
+        public List<EventsModel> GetEditable()
         {
-            return View();
+            var list = new List<EventsModel>();
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT e.EventID, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.Description, e.Image, e.Time,
+                    e.DateAdded 
+                    FROM Events e
+                    LEFT JOIN EventHandler eh on e.EventHandlerID=eh.EventHandlerID
+                    INNER JOIN Location l on e.LocationCode=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID
+                    INNER JOIN EventHost EvHo on e.EventID=EvHo.EventID
+                    WHERE EvHo.UserID=@UserID
+                    ORDER BY e.DateAdded DESC";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", Session["userid"].ToString());
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while (data.Read())
+                        {
+                            list.Add(new EventsModel
+                            {
+                                ID = int.Parse(data["EventID"].ToString()),
+                                Name = data["Name"].ToString(),
+                                EventHandlerName = data["HandlerName"].ToString(),
+                                LocationName = data["LocationName"].ToString(),
+                                Description = data["Description"].ToString(),
+                                Image = data["Image"].ToString(),
+                                Time = DateTime.Parse(data["Time"].ToString()),
+                                DateAdded = DateTime.Parse(data["DateAdded"].ToString())
+
+                            });
+
+                        }
+                    }
+                }
+                con.Close();
+            }
+            return list;
+        }
+
+        public ActionResult IndexOfEditableEvent()
+        {
+            Helper.ValidateLogin();
+            var list = new EventHostModel();
+            list.EditableEvents = GetEditable();
+            return View(list);
+        }
+
+        public ActionResult EditEvent(int? id)
+        {
+            Helper.ValidateLogin();
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var record = new EventsModel();
+            record.AllLocations = GetLocation();
+            record.EventHandlers = GetHandler();
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"Select e.EventID, e.EventHandlerID, h.Name AS EHName, e.LocationCode, 
+                            l.Name AS LName, c.Name AS CName,
+                            e.Name, e.Description, e.Image, e.Time, e.Status,
+                            e.DateAdded, e.IsGoing, e.Interested, e.NotGoing
+                            FROM Events e
+                            LEFT JOIN EventHandler h ON e.EventHandlerID=h.EventHandlerID
+                            LEFT JOIN Location l ON e.LocationCode=l.LocationCode
+                            LEFT JOIN Campus c ON l.CampusID=c.CampusID
+                            WHERE e.EventID=@EventID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@EventID", id);
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        if (data.HasRows)
+                        {
+                            while (data.Read())
+                            {
+                                record.ID = int.Parse(data["EventID"].ToString());
+                                record.EventHandlerID = int.Parse(data["EventHandlerID"].ToString());
+                                record.EventHandlerName = data["EHName"].ToString();
+                                record.LocationCode = int.Parse(data["LocationCode"].ToString());
+                                record.LocationName = data["CName"].ToString() + ", " + data["LName"].ToString();
+                                record.Name = data["Name"].ToString();
+                                record.Description = data["Description"].ToString();
+                                record.Image = data["Image"].ToString();
+                                record.Time = DateTime.Parse(data["Time"].ToString());
+                                record.Status = data["Status"].ToString();
+                                record.DateAdded = DateTime.Parse(data["DateAdded"].ToString());
+                                record.IsGoing = int.Parse(data["IsGoing"].ToString());
+                                record.Interested = int.Parse(data["Interested"].ToString());
+                                record.NotGoing = int.Parse(data["NotGoing"].ToString());
+                            }
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                con.Close();
+            }
+            return View(record);
+        }
+
+        [HttpPost]
+        public ActionResult EditEvent(int? id, EventsModel record, HttpPostedFileBase Image)
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"UPDATE Events SET 
+                    EventHandlerID=@EventHandlerID, LocationCode=@LocationCode, 
+                    Name=@Name, Description=@Description, Image=@Image,
+                    Time=@Time, Status=@Status, DateModified=@DateModified
+                    WHERE EventID=@EventID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
+                    cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
+                    cmd.Parameters.AddWithValue("@Name", record.Name);
+                    cmd.Parameters.AddWithValue("@Description", record.Description);
+                    cmd.Parameters.AddWithValue("@Image",
+                        DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
+                    Image.SaveAs(Server.MapPath("~/Images/Events/" +
+                        DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
+                    cmd.Parameters.AddWithValue("@Time", record.Time);
+                    cmd.Parameters.AddWithValue("Status", "Updated");
+                    cmd.Parameters.AddWithValue("@DateModified", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@EventID", id);
+                    cmd.ExecuteNonQuery();
+                    return RedirectToAction("Index");
+                }
+            }
         }
     }
 

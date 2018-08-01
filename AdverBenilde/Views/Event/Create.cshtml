@@ -69,7 +69,7 @@ new
                                                                    new SelectList(Model.AllLocations, "LocationCode", "Name"),
                                                                    "Choose the Location.. ",
                                                                    new { @class = "form-control" })
-                <span>@Html.ActionLink("Create Event Handler", "CreateLocation")</span>
+                <span>@Html.ActionLink("Create New Location", "CreateLocation")</span>
                 @Html.ValidationMessageFor(model => model.LocationCode, "", new { @class = "text-danger" })
             </div>
         </div>

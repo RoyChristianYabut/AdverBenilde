@@ -10,5 +10,6 @@ namespace AdverBenilde.Models
     {
         public int UserID { get; set; }
         public int EventID { get; set; }
+        public List<EventsModel> EditableEvents { get; set; }
     }
 }

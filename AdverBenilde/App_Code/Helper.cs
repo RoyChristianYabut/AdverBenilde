@@ -75,7 +75,7 @@ namespace AdverBenilde.App_Code
         {
             if (HttpContext.Current.Session["userid"] == null)
             {
-                HttpContext.Current.Response.Redirect("~/Account/Login");
+                HttpContext.Current.Response.Redirect("~/Main/Login");
             }
         }
     }

@@ -60,7 +60,7 @@ namespace AdverBenilde.Controllers
                     {
                         cmd.Parameters.AddWithValue("@TypeID", 3);
                         cmd.Parameters.AddWithValue("@Email", record.Email);
-                        cmd.Parameters.AddWithValue("@Password", Helper.Unhash(record.Password));
+                        cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Password));
                         cmd.Parameters.AddWithValue("@FirstName", record.FN);
                         cmd.Parameters.AddWithValue("@LastName", record.LN);
                         cmd.Parameters.AddWithValue("@Status", "Pending");

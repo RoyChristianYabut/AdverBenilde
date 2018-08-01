@@ -300,6 +300,8 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LayoutPageLogin.cshtml" />
     <Content Include="Views\Event\EditEvent.cshtml" />
+    <Content Include="Views\Main\MyProfile.cshtml" />
+    <Content Include="Views\Event\IndexOfEditableEvent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
