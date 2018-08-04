@@ -33,6 +33,7 @@ namespace AdverBenilde.Models
         [Required(ErrorMessage = "Required")]
         [MaxLength(100, ErrorMessage = "Invalid input")]
         public string LN { get; set; }
+        [Required]
         public string Phone { get; set; }
         public string Status { get; set; }
         [Display(Name = "Date Added")]

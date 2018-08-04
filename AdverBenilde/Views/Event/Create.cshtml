@@ -51,24 +51,23 @@ new
 
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.EventHandlerID,
-                                                  new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
-                                                  "Choose the Organization.. ",
-                                                  new { @class = "form-control" })
-                <span>@Html.ActionLink("Create Event Handler", "CreateHandler")</span> 
+                                                       new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
+                                                       "Choose the Organization.. ",
+                                                       new { @class = "form-control" })
+                <span>@Html.ActionLink("Create Event Handler", "CreateHandler")</span>
                 @Html.ValidationMessageFor(model => model.EventHandlerID, "", new { @class = "text-danger" })
 
             </div>
-          
+
         </div>
 
 
         <div class="form-group">
             @Html.LabelFor(model => model.LocationName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.LocationCode,
-                                                                   new SelectList(Model.AllLocations, "LocationCode", "Name"),
-                                                                   "Choose the Location.. ",
-                                                                   new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.LocationCode, new SelectList(Model.AllLocations, "LocationCode", "Name"),
+                                                                        "Choose the Location.. ",
+                                                                        new { @class = "form-control" })
                 <span>@Html.ActionLink("Create New Location", "CreateLocation")</span>
                 @Html.ValidationMessageFor(model => model.LocationCode, "", new { @class = "text-danger" })
             </div>
@@ -110,6 +109,9 @@ new
             </div>
         </div>
     </div>
+
+    @Html.Raw(ViewBag.ErrorMessage)
+    <div class="row"></div>
 }
 
 <div>

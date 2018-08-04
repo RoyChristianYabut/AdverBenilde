@@ -91,21 +91,29 @@ namespace AdverBenilde.Controllers
                               @Image, @Time,@Status,@DateAdded, @IsGoing, @Interested, @NotGoing);";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
-                    cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
-                    cmd.Parameters.AddWithValue("@Name", record.Name);
-                    cmd.Parameters.AddWithValue("@Description", record.Description);
+                    try
+                    {
+                        cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
+                        cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
+                        cmd.Parameters.AddWithValue("@Name", record.Name);
+                        cmd.Parameters.AddWithValue("@Description", record.Description);
                         cmd.Parameters.AddWithValue("@Image",
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
                         Image.SaveAs(Server.MapPath("~/Images/Events/" +
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
-                    cmd.Parameters.AddWithValue("@Time", record.Time);
-                    cmd.Parameters.AddWithValue("@Status", "Pending");
-                    cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@IsGoing", 0);
-                    cmd.Parameters.AddWithValue("@Interested", 0);
-                    cmd.Parameters.AddWithValue("@NotGoing", 0);
-                    cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@Time", record.Time);
+                        cmd.Parameters.AddWithValue("@Status", "Pending");
+                        cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@IsGoing", 0);
+                        cmd.Parameters.AddWithValue("@Interested", 0);
+                        cmd.Parameters.AddWithValue("@NotGoing", 0);
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch(Exception e)
+                    {
+                        ViewBag.ErrorMessage = "<div class='alert alert-danger col-lg-6'>Error: " + e.Message + "</div>";
+                        return View();
+                    }
                 }
                 con.Close();
             }

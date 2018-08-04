@@ -52,7 +52,7 @@ namespace AdverBenilde.Controllers
                 {
                     con.Open();
                     string query = @"INSERT INTO Users 
-                    (TypeID, Email, Password, FirstName, LastName, Phone
+                    (TypeID, Email, Password, FirstName, LastName, Phone,
                     Status, DateAdded) VALUES
                     (@TypeID, @Email, @Password, @FirstName,
                     @LastName, @Phone, @Status, @DateAdded)";
