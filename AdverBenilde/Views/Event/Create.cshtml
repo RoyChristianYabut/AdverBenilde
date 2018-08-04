@@ -50,8 +50,7 @@ new
 
 
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.EventHandlerID,
-                                                       new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
+                @Html.DropDownListFor(model => model.EventHandlerID, new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
                                                        "Choose the Organization.. ",
                                                        new { @class = "form-control" })
                 <span>@Html.ActionLink("Create Event Handler", "CreateHandler")</span>

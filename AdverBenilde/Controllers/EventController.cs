@@ -30,7 +30,7 @@ namespace AdverBenilde.Controllers
                             {
                                 LocationCode = int.Parse(data["LocationCode"].ToString()),
                                 CampusName = data["CampusName"].ToString(),
-                                Name = data["CampusName"].ToString()+", "+data["Name"].ToString()
+                                Name = data["CampusName"].ToString() + ", " + data["Name"].ToString()
                             });
                         }
                     }
@@ -85,7 +85,7 @@ namespace AdverBenilde.Controllers
                 con.Open();
                 string query = @" INSERT INTO Events
                               (EventHandlerID, LocationCode, Name, Description, 
-                               Image, Time ,Status,DateAdded, IsGoing, Interested, NotGoing)
+                               Image, Time, Status, DateAdded, IsGoing, Interested, NotGoing)
                               VALUES
                               (@EventHandlerID, @LocationCode, @Name, @Description, 
                               @Image, @Time,@Status,@DateAdded, @IsGoing, @Interested, @NotGoing);";
@@ -109,7 +109,7 @@ namespace AdverBenilde.Controllers
                         cmd.Parameters.AddWithValue("@NotGoing", 0);
                         cmd.ExecuteNonQuery();
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         ViewBag.ErrorMessage = "<div class='alert alert-danger col-lg-6'>Error: " + e.Message + "</div>";
                         return View();
@@ -288,7 +288,7 @@ namespace AdverBenilde.Controllers
                                 ID = int.Parse(data["EventID"].ToString()),
                                 Name = data["Name"].ToString(),
                                 EventHandlerName = data["HandlerName"].ToString(),
-                                LocationName=data["LocationName"].ToString(),
+                                LocationName = data["LocationName"].ToString(),
                                 Description = data["Description"].ToString(),
                                 Image = data["Image"].ToString(),
                                 Time = DateTime.Parse(data["Time"].ToString()),
@@ -471,7 +471,7 @@ namespace AdverBenilde.Controllers
                         }
                     }
                 }
-                
+
             }
             return false;
         }
@@ -506,7 +506,7 @@ namespace AdverBenilde.Controllers
             }
             string Iaction = "";
 
-            if (Action == "1" && isInsert==false)
+            if (Action == "1" && isInsert == false)
             {
                 val1 = 1;
                 checkValue = "1";
@@ -576,15 +576,15 @@ namespace AdverBenilde.Controllers
                 checkValue = "3";
             }
 
-            if (checkValue =="1")
+            if (checkValue == "1")
             {
                 Iaction = "IsGoing";
             }
-            else if (checkValue=="2")
+            else if (checkValue == "2")
             {
                 Iaction = "Interested";
             }
-            else if (checkValue=="3")
+            else if (checkValue == "3")
             {
                 Iaction = "NotGoing";
             }
@@ -752,20 +752,29 @@ namespace AdverBenilde.Controllers
                     WHERE EventID=@EventID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
-                    cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
-                    cmd.Parameters.AddWithValue("@Name", record.Name);
-                    cmd.Parameters.AddWithValue("@Description", record.Description);
-                    cmd.Parameters.AddWithValue("@Image",
-                        DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
-                    Image.SaveAs(Server.MapPath("~/Images/Events/" +
-                        DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
-                    cmd.Parameters.AddWithValue("@Time", record.Time);
-                    cmd.Parameters.AddWithValue("Status", "Updated");
-                    cmd.Parameters.AddWithValue("@DateModified", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@EventID", id);
-                    cmd.ExecuteNonQuery();
-                    return RedirectToAction("Index");
+                    try
+                    {
+
+                        cmd.Parameters.AddWithValue("@EventHandlerID", record.EventHandlerID);
+                        cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
+                        cmd.Parameters.AddWithValue("@Name", record.Name);
+                        cmd.Parameters.AddWithValue("@Description", record.Description);
+                        cmd.Parameters.AddWithValue("@Image",
+                            DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
+                        Image.SaveAs(Server.MapPath("~/Images/Events/" +
+                            DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
+                        cmd.Parameters.AddWithValue("@Time", record.Time);
+                        cmd.Parameters.AddWithValue("Status", "Updated");
+                        cmd.Parameters.AddWithValue("@DateModified", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@EventID", id);
+                        cmd.ExecuteNonQuery();
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = "<div class='alert alert-danger col-lg-6'>Error: " + e.Message + "</div>";
+                        return View();
+                    }
                 }
             }
         }
