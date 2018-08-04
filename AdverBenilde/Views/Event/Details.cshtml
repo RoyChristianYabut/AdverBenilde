@@ -30,19 +30,11 @@
 
             <small>Date Added: @Model.DateAdded</small>
 
-            <h5>Share</h5>
-            <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
-            <script type="IN/Share" data-onsuccess="lnksuccess" data-onerror="error" data-url="<%=strShareUrl %>">
-            </script>
+            <strong>Share:</strong>
 
-            <script>
-                function lnksuccess(url) {
-                    alert("url = " + url + "  shared successfully");
-                }
-                function lnkerror(url) {
-                    alert("something goes wrong in url sharing");
-                }
-            </script>
+            <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:62523/Event/Details/@Model.ID" class="fa fa-linkedin-square fa-3x">
+
+            </a>
 
             <a href="https://twitter.com/share" class="fa fa-twitter-square fa-3x" data-url="https://www.eventbrite.com/" data-text="Enter Data text here" data-size="large" data-count="none"></a>
 
@@ -52,3 +44,4 @@
         </div>
     </div>
 }
+
