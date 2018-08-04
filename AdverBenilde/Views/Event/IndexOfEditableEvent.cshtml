@@ -1,13 +1,12 @@
 ﻿@model AdverBenilde.Models.EventHostModel
 
 @{
-    ViewBag.Title = "IndexOfEditableEvent";
+    ViewBag.Title = "";
 }
 
-<h2>IndexOfEditableEvent</h2>
+<h2>Events</h2>
 
-<div class="col-lg-9">
-    <h1 class="text-center">View Stores</h1>
+<div >
     <hr />
     @foreach (var item in Model.EditableEvents)
     {
@@ -27,3 +26,4 @@
         </div>
     }
 </div>
+<div class="row"></div>

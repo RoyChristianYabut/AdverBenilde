@@ -11,15 +11,17 @@ namespace AdverBenilde.Models
     {
         [Key]
         public int ID { get; set; }
-
+        [Required]
         public int EventHandlerID { get; set; }
         public List<EventHandlerModel> EventHandlers { get; set; }
         public string EventHandlerName { get; set; }
+        [Required]
         public int LocationCode { get; set; }
         public string LocationName { get; set; }
         public List<CampusModel> AllCampus { get; set; }
         public List<LocationModel> AllLocations { get; set; }
         public List<EventsModel> AllEvents { get; set; }
+        [Required]
         public string Name { get; set; }
 
         [DataType(DataType.MultilineText)]
@@ -27,9 +29,10 @@ namespace AdverBenilde.Models
 
 
 
-
+        [Required]
         public string Image { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy hh:mm tt}", ApplyFormatInEditMode = true)]
+        [Required]
         public DateTime Time { get; set; }
 
         public bool IsFeatured { get; set; }

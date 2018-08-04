@@ -52,10 +52,10 @@ namespace AdverBenilde.Controllers
                 {
                     con.Open();
                     string query = @"INSERT INTO Users 
-                    (TypeID, Email, Password, FirstName, LastName,
+                    (TypeID, Email, Password, FirstName, LastName, Phone
                     Status, DateAdded) VALUES
                     (@TypeID, @Email, @Password, @FirstName,
-                    @LastName, @Status, @DateAdded)";
+                    @LastName, @Phone, @Status, @DateAdded)";
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@TypeID", 3);
@@ -63,6 +63,7 @@ namespace AdverBenilde.Controllers
                         cmd.Parameters.AddWithValue("@Password", Helper.Hash(record.Password));
                         cmd.Parameters.AddWithValue("@FirstName", record.FN);
                         cmd.Parameters.AddWithValue("@LastName", record.LN);
+                        cmd.Parameters.AddWithValue("@Phone", record.Phone);
                         cmd.Parameters.AddWithValue("@Status", "Pending");
                         cmd.Parameters.AddWithValue("@DateAdded", DateTime.Now);
                         cmd.ExecuteNonQuery();

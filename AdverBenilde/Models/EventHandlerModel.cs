@@ -10,7 +10,7 @@ namespace AdverBenilde.Models
     {
         [Key]
         public int EventHandlerID { get; set; }
-
+        [Required]
         public string Name { get; set; }
     }
 }

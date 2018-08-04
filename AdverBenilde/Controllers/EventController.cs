@@ -95,9 +95,9 @@ namespace AdverBenilde.Controllers
                     cmd.Parameters.AddWithValue("@LocationCode", record.LocationCode);
                     cmd.Parameters.AddWithValue("@Name", record.Name);
                     cmd.Parameters.AddWithValue("@Description", record.Description);
-                    cmd.Parameters.AddWithValue("@Image",
+                        cmd.Parameters.AddWithValue("@Image",
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName);
-                    Image.SaveAs(Server.MapPath("~/Images/Events/" +
+                        Image.SaveAs(Server.MapPath("~/Images/Events/" +
                         DateTime.Now.ToString("yyyyMMddHHmmss-") + Image.FileName));
                     cmd.Parameters.AddWithValue("@Time", record.Time);
                     cmd.Parameters.AddWithValue("@Status", "Pending");
@@ -365,6 +365,7 @@ namespace AdverBenilde.Controllers
 
         public ActionResult Index()
         {
+            Helper.ValidateLogin();
             var list = new EventsModel();
             list.AllCampus = GetCampus();
             if (Request.QueryString["c"] == null)

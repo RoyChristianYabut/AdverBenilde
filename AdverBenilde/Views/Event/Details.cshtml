@@ -1,16 +1,17 @@
 ﻿@model AdverBenilde.Models.EventsModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "";
 }
+
 
 @using (Html.BeginForm())
 {
     <div class="col-lg-4">
         <img src="../../Images/Events/@Model.Image" class="img-responsive" />
-        <label>@Html.RadioButton("Action", "1", new { onchange = "this.form.submit();" }) Is Going</label>
-        <label>@Html.RadioButton("Action", "2", new { onchange = "this.form.submit();" }) Interested</label>
-        <label>@Html.RadioButton("Action", "3", new { onchange = "this.form.submit();" }) Not Going</label>
+        <label class="btn btn-tertiary">@Html.RadioButton("Action", "1", new { onchange = "this.form.submit();" }) Is Going</label>
+        <label class="btn btn-tertiary">@Html.RadioButton("Action", "2", new { onchange = "this.form.submit();" }) Interested</label>
+        <label class="btn btn-tertiary">@Html.RadioButton("Action", "3", new { onchange = "this.form.submit();" }) Not Going</label>
     </div>
     <div class="col-lg-8">
         <div class="well clearfix">
@@ -24,10 +25,30 @@
                 @Model.Description
             </p>
             <small>Event Handler: @Model.EventHandlerName</small><br />
-            <small>Status: @Model.Status</small>
+
             <h6>|  Is Going-@Model.IsGoing.ToString()  | Interested-@Model.Interested.ToString()  | NotGoing-@Model.NotGoing.ToString()  |</h6>
 
             <small>Date Added: @Model.DateAdded</small>
+
+            <h5>Share</h5>
+            <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+            <script type="IN/Share" data-onsuccess="lnksuccess" data-onerror="error" data-url="<%=strShareUrl %>">
+            </script>
+
+            <script>
+                function lnksuccess(url) {
+                    alert("url = " + url + "  shared successfully");
+                }
+                function lnkerror(url) {
+                    alert("something goes wrong in url sharing");
+                }
+            </script>
+
+            <a href="https://twitter.com/share" class="fa fa-twitter-square fa-3x" data-url="https://www.eventbrite.com/" data-text="Enter Data text here" data-size="large" data-count="none"></a>
+
+            <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "//platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+
+            <a href="http://www.facebook.com/sharer.php?u= http://localhost:62523/Event/Details/@Model.ID" title="share on facebook" class="fa fa-facebook-square fa-3x"></a>
         </div>
     </div>
 }

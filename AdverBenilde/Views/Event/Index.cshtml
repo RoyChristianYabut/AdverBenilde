@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2></h2>
 
 <div class="col-lg-3">
     <br /><br />
@@ -11,7 +11,7 @@
         <h3>Advanced Search</h3>
         <hr />
         <div class="list-group">
-            <a href="@Url.Action("Index?c=100000", "Event")" class="list-group-item">All Categories</a>
+            <a href=@Url.Action("Index", "Event") class="list-group-item">All Categories</a>
             <h3 class="list-group-item">Date</h3>
             <a href="Index?c=100000" class="list-group-item">
                 <span class="badge"></span>
@@ -33,7 +33,7 @@
     </div>
 </div>
 <div class="col-lg-9">
-    <h1 class="text-center">View Stores</h1>
+    <h1 class="text-center">Events</h1>
     <hr />
     @foreach (var item in Model.AllEvents)
     {
