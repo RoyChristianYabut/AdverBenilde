@@ -1,0 +1,25 @@
+﻿@model AdverBenilde.Models.AuthorModel
+
+@{
+    ViewBag.Title = "IndexO";
+}
+
+<h2>IndexO</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@foreach (var item in Model.AllAuthor)
+{
+<div class="col-lg-3">
+
+
+    <h3>@item.Name</h3>
+    <small>Handler: @item.org</small><br />
+    <small>Location: @item.room</small><br />
+    <small>Time: @item.EventDate.ToString("dd-MMM-yy hh:mm tt")</small>
+</div>
+
+}
+

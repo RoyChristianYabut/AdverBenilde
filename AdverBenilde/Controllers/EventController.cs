@@ -67,6 +67,90 @@ namespace AdverBenilde.Controllers
             return list;
         }
 
+        public List<AuthorModel> GetA()
+        {
+            var list = new List<AuthorModel>();
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @"SELECT e.Recordno, e.Name, eh.Name AS [HandlerName], l.Name AS LocationName, e.orgID, e.roomID, e.eventDate 
+                    FROM Authorship e
+                    LEFT JOIN EventHandler eh on e.orgID=eh.EventHandlerID
+                    INNER JOIN Location l on e.roomID=l.LocationCode
+                    INNER JOIN Campus c on c.CampusID=l.CampusID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while (data.Read())
+                        {
+                            list.Add(new AuthorModel
+                            {
+                                RecordNo = int.Parse(data["Recordno"].ToString()),
+                                Name = data["Name"].ToString(),
+                                orgID = int.Parse(data["orgID"].ToString()),
+                                org = data["HandlerName"].ToString(),
+                                roomID = int.Parse(data["roomID"].ToString()),
+                                room = data["LocationName"].ToString(),
+                                EventDate = DateTime.Parse(data["eventDate"].ToString())
+
+                            });
+
+                        }
+                    }
+                }
+                con.Close();
+            }
+            return list;
+        }
+
+        public ActionResult CreateAuthor()
+        {
+            var record = new AuthorModel();
+            record.AllLocations = GetLocation();
+            record.EventHandlers = GetHandler();
+            return View(record);
+        }
+
+
+        [HttpPost]
+        public ActionResult CreateAuthor(AuthorModel record, HttpPostedFileBase Image)
+        {
+            int eventid = 0;
+            using (SqlConnection con = new SqlConnection(Helper.GetCon()))
+            {
+                con.Open();
+                string query = @" INSERT INTO Authorship
+                              (Name, orgID, roomID, eventDate)
+                              VALUES
+                              (@Name, @orgID, @roomID, @eventDate);";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                        cmd.Parameters.AddWithValue("@Name", record.Name);
+                        cmd.Parameters.AddWithValue("@orgID", record.orgID);
+                        cmd.Parameters.AddWithValue("@roomID", record.roomID);
+                        cmd.Parameters.AddWithValue("@eventDate", DateTime.Parse(record.EventDate.ToString()));
+                        cmd.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+
+            return RedirectToAction("IndexO");
+        }
+
+
+        public ActionResult IndexO()
+        {
+
+            var list = new AuthorModel();
+            list.AllCampus = GetCampus();
+            list.AllAuthor=GetA();
+            return View(list);
+        }
+
+
+
+
         public ActionResult Create()
         {
             Helper.ValidateLogin();
@@ -75,6 +159,9 @@ namespace AdverBenilde.Controllers
             record.EventHandlers = GetHandler();
             return View(record);
         }
+
+
+      
 
         [HttpPost]
         public ActionResult Create(EventsModel record, HttpPostedFileBase Image)

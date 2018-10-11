@@ -150,6 +150,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AuthorModel.cs" />
     <Compile Include="Models\CampusModel.cs" />
     <Compile Include="Models\EventHandlerModel.cs" />
     <Compile Include="Models\EventHostModel.cs" />
@@ -310,6 +311,8 @@
     <Content Include="Views\Event\EditEvent.cshtml" />
     <Content Include="Views\Main\MyProfile.cshtml" />
     <Content Include="Views\Event\IndexOfEditableEvent.cshtml" />
+    <Content Include="Views\Event\CreateAuthor.cshtml" />
+    <Content Include="Views\Event\IndexO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

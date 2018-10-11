@@ -1,0 +1,80 @@
+﻿@model AdverBenilde.Models.AuthorModel
+
+@{
+    ViewBag.Title = "CreateAuthor";
+}
+
+<h2>CreateAuthor</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>AuthorModel</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.orgID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.orgID, new SelectList(Model.EventHandlers, "EventHandlerID", "Name"),
+                                                             "Choose the Organization.. ",
+                                                             new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.orgID, "", new { @class = "text-danger" })
+
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.roomID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.roomID, new SelectList(Model.AllLocations, "LocationCode", "Name"),
+                                                                              "Choose the Location.. ",
+                                                                              new { @class = "form-control" })
+
+            @Html.ValidationMessageFor(model => model.roomID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EventDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EventDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.EventDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
